@@ -78,8 +78,10 @@ class _MyHomePageState extends State<MyHomePage> {
       if (value.statusCode == 200) {
         Map<String, dynamic> body = jsonDecode(value.body);
         List matches = body['result'];
+        int numOfMatches = matches.length;
+        print(numOfMatches);
         setState(() {
-          _matches = new List(matches.length);
+          _matches = new List(numOfMatches);
         });
       } else {
         _matches = new List(0);
@@ -121,16 +123,17 @@ class _MyHomePageState extends State<MyHomePage> {
           // horizontal).
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            ListView.builder(
+            Expanded(
+              child: ListView.builder(
                 itemBuilder: (context, index) {
-                  print('return listTIle');
+                  print('index' + index.toString());
                   return ListTile();
                 },
                 itemCount: _matches.length,
                 scrollDirection: Axis.vertical,
                 shrinkWrap: true,
+              ),
             ),
-
           ],
         ),
       ),
