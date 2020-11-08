@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:cs_match_notifier/match.dart';
@@ -90,6 +91,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   List<Match> _matches = new List(0);
   List<Match> _favoritedMatches = new List();
+  Map<Match, Timer> _notificationTimers = new Map();
 
   @override
   void initState() {
@@ -100,9 +102,14 @@ class _MyHomePageState extends State<MyHomePage> {
       'Accept': '*/*',
       'Accept-Encoding': 'gzip',
     };
-    const body = {
+
+    String now = DateFormat('y-M-d H:m:s').format(DateTime.now().toUtc());
+    var body = {
       'apikey': '172edrW4KxLIfk1SMsvLLLzdx6ugmT8anucDNe1QkkRUh7p3hcUQRzA6EcQmaqPuCA5y22mExEPVTmVWpt9NDgysDBlBWXv3PopI79A6DgS8QXBUgEcyaDhdKXlry6b5',
       'wiki': 'counterstrike',
+      'conditions': '[[date::>' + now + ']] AND [[dateexact::1]]',
+      'query': 'matchid,opponent1,opponent2,tournament,stream,date',
+      'order': 'date ASC'
     };
 
     Future<Response> matches = http.post('https://api.liquipedia.net/api/v1/match', headers: headers, body: body);
@@ -166,7 +173,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   if (matchDay == today) {
                     day = ' today';
                   } else if (matchDay.substring(0, matchDay.length - 1) == today.substring(0, today.length - 1)
-                             && matchDay.substring(matchDay.length - 1) == today.substring(today.length - 1)) {
+                             && matchDay.substring(matchDay.length - 1) != today.substring(today.length - 1)) {
                     day = ' tomorrow';
                   } else {
                     day = ' ' + DateFormat('MMMM d, yyyy').format(matchTime);
@@ -185,8 +192,13 @@ class _MyHomePageState extends State<MyHomePage> {
                               setState(() {
                                 if (isFavoritedMatch) {
                                   _favoritedMatches.remove(match);
+                                  _notificationTimers.remove(match).cancel();
                                 } else {
                                   _favoritedMatches.add(match);
+                                  _notificationTimers[match] = Timer(matchTime.difference(DateTime.now()), () {
+                                    // TODO: Put Byron's code here
+                                    print('Notification went off.');
+                                  });
                                 }
                               });
                             },
