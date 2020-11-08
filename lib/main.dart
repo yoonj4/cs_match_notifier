@@ -7,6 +7,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
 import 'package:intl/intl.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -28,7 +29,7 @@ void notificationInit() async {
 }
 
 Future selectNotification(var stream) async {
-  print('https://liquipedia.net/counterstrike/Special:Stream/twitch/' + stream);
+  launch('https://liquipedia.net/counterstrike/Special:Stream/twitch/' + stream);
 }
 
 class MyApp extends StatelessWidget {
