@@ -56,7 +56,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  List<Match> _matches;
+  List<Match> _matches = new List(0);
   List<Match> _favoritedMatches;
 
   @override
@@ -77,7 +77,10 @@ class _MyHomePageState extends State<MyHomePage> {
     matches.then((value) {
       if (value.statusCode == 200) {
         Map<String, dynamic> body = jsonDecode(value.body);
-        _matches = new List(body['result']);
+        List matches = body['result'];
+        setState(() {
+          _matches = new List(matches.length);
+        });
       } else {
         _matches = new List(0);
       }
@@ -92,7 +95,6 @@ class _MyHomePageState extends State<MyHomePage> {
     // The Flutter framework has been optimized to make rerunning build methods
     // fast, so that you can just rebuild anything that needs updating rather
     // than having to individually change instances of widgets.
-    print('building scaffold');
     return Scaffold(
       appBar: AppBar(
         // Here we take the value from the MyHomePage object that was created by
