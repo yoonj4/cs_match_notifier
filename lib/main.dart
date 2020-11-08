@@ -145,6 +145,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       child: ListTile(
                         title: Text(match.opponent1 + " vs " + match.opponent2, style: TextStyle(fontWeight: FontWeight.bold),),
                         subtitle: Text(DateFormat('jm').format(matchTime) + day),
+                        trailing: Image(image: AssetImage('assets/clock.png'),),
                       )
                   );
                 },
