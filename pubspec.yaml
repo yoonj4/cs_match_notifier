@@ -53,6 +53,7 @@ flutter:
   assets:
     - assets/clock.png
     - assets/clock-white.png
+    - assets/csgo_icon.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

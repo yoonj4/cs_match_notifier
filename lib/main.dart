@@ -9,37 +9,26 @@ import 'package:http/http.dart';
 import 'package:intl/intl.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
   notificationInit();
   runApp(MyApp());
 }
 
+FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
+
 void notificationInit() async {
-  FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-  FlutterLocalNotificationsPlugin();
+  flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 // initialise the plugin. app_icon needs to be a added as a drawable resource to the Android head project
   const AndroidInitializationSettings initializationSettingsAndroid =
-  AndroidInitializationSettings('app_icon');
-  final IOSInitializationSettings initializationSettingsIOS =
-  IOSInitializationSettings(
-      onDidReceiveLocalNotification: onDidReceiveLocalNotification);
-  final MacOSInitializationSettings initializationSettingsMacOS =
-  MacOSInitializationSettings();
+  AndroidInitializationSettings('csgo_icon');
   final InitializationSettings initializationSettings = InitializationSettings(
-      android: initializationSettingsAndroid,
-      iOS: initializationSettingsIOS,
-      macOS: initializationSettingsMacOS);
+      android: initializationSettingsAndroid);
   await flutterLocalNotificationsPlugin.initialize(initializationSettings,
       onSelectNotification: selectNotification);
 }
 
-Future selectNotification(String payload) async {
-  if (payload != null) {
-    debugPrint('notification payload: $payload');
-  }
-  await Navigator.push(
-    context,
-    MaterialPageRoute<void>(builder: (context) => SecondScreen(payload)),
-  );
+Future selectNotification(var stream) async {
+  print('https://liquipedia.net/counterstrike/Special:Stream/twitch/' + stream);
 }
 
 class MyApp extends StatelessWidget {
@@ -127,6 +116,21 @@ class _MyHomePageState extends State<MyHomePage> {
         _matches = new List(0);
       }
     });
+  }
+
+  Future<void> _showNotification() async {
+    const AndroidNotificationDetails androidPlatformChannelSpecifics =
+    AndroidNotificationDetails(
+        'your channel id', 'your channel name', 'your channel description',
+        importance: Importance.max,
+        priority: Priority.high);
+    const NotificationDetails platformChannelSpecifics =
+    NotificationDetails(android: androidPlatformChannelSpecifics);
+
+    var _matchNotif = _matches[1].opponent1 + " vs " + _matches[1].opponent2 + " is starting now! Watch now!";
+    await flutterLocalNotificationsPlugin.show(
+        0, 'Match Base', _matchNotif, platformChannelSpecifics,
+        payload: _matches[1].stream['twitch']);
   }
 
   @override
@@ -217,26 +221,11 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => setState(() {
+          _showNotification();
         }),
         tooltip: 'Notification Maker',
         child: Icon(Icons.add),
       ),
     );
   }
-
-  Future<void> _showNotification() async {
-    const AndroidNotificationDetails androidPlatformChannelSpecifics =
-    AndroidNotificationDetails(
-        'your channel id', 'your channel name', 'your channel description',
-        importance: Importance.max,
-        priority: Priority.high,
-        ticker: 'ticker');
-    const NotificationDetails platformChannelSpecifics =
-    NotificationDetails(android: androidPlatformChannelSpecifics);
-    await flutterLocalNotificationsPlugin.show(
-        0, 'plain title', 'plain body', platformChannelSpecifics,
-        payload: 'item x');
-  }
-
-
 }
