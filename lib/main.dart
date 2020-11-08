@@ -4,6 +4,7 @@ import 'package:cs_match_notifier/match.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
+import 'package:intl/intl.dart';
 
 void main() {
   runApp(MyApp());
@@ -63,12 +64,12 @@ class _MyHomePageState extends State<MyHomePage> {
   void initState() {
     super.initState();
 
-    Map<String, String> headers = {
+    final Map<String, String> headers = {
       'Content-Type': 'application/x-www-form-urlencoded',
       'Accept': '*/*',
       'Accept-Encoding': 'gzip',
     };
-    var body = {
+    const body = {
       'apikey': '172edrW4KxLIfk1SMsvLLLzdx6ugmT8anucDNe1QkkRUh7p3hcUQRzA6EcQmaqPuCA5y22mExEPVTmVWpt9NDgysDBlBWXv3PopI79A6DgS8QXBUgEcyaDhdKXlry6b5',
       'wiki': 'counterstrike',
     };
@@ -76,13 +77,11 @@ class _MyHomePageState extends State<MyHomePage> {
     Future<Response> matches = http.post('https://api.liquipedia.net/api/v1/match', headers: headers, body: body);
     matches.then((value) {
       if (value.statusCode == 200) {
-        Map<String, dynamic> body = jsonDecode(value.body);
-        List matches = body['result'];
-        int numOfMatches = matches.length;
-        print(numOfMatches);
+        final Map<String, dynamic> body = jsonDecode(value.body);
+        final List matches = body['result'];
         setState(() {
           _matches = List.from(matches.map((e) {
-            Match match = Match.fromJson(e);
+            final Match match = Match.fromJson(e);
             return match;
           }));
         });
@@ -101,11 +100,6 @@ class _MyHomePageState extends State<MyHomePage> {
     // fast, so that you can just rebuild anything that needs updating rather
     // than having to individually change instances of widgets.
     return Scaffold(
-      appBar: AppBar(
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
-      ),
       body: Center(
         // Center is a layout widget. It takes a single child and positions it
         // in the middle of the parent.
@@ -126,13 +120,33 @@ class _MyHomePageState extends State<MyHomePage> {
           // horizontal).
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
+
             Expanded(
               child: ListView.builder(
                 itemBuilder: (context, index) {
-                  Match match = _matches[index];
-                  return ListTile(
-                    title: Text(match.opponent1 + " vs " + match.opponent2),
-                    subtitle: Text(match.date),
+                  final Match match = _matches[index];
+                  final DateTime matchTime = match.date;
+
+                  String day;
+                  final String matchDay = DateFormat('yyyyMMdd').format(matchTime);
+                  final DateTime now = DateTime.now();
+                  final String today = DateFormat('yyyyMMdd').format(now);
+
+                  if (matchDay == today) {
+                    day = ' today';
+                  } else if (matchDay.substring(0, matchDay.length - 1) == today.substring(0, today.length - 1)
+                             && matchDay.substring(matchDay.length - 1) == today.substring(today.length - 1)) {
+                    day = ' tomorrow';
+                  } else {
+                    day = ' ' + DateFormat('MMMM d, yyyy').format(matchTime);
+                  }
+
+                  return Card(
+                      child: ListTile(
+                        title: Text(match.opponent1 + " vs " + match.opponent2, style: TextStyle(fontWeight: FontWeight.bold),),
+                        subtitle: Text(DateFormat('jm').format(matchTime) + day),
+                        trailing: Image(image: AssetImage('assets/clock.png'),),
+                      )
                   );
                 },
                 itemCount: _matches.length,
