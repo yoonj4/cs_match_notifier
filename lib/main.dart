@@ -221,7 +221,7 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => setState(() {
-          _showNotification(_matches[1]);
+          _showNotification(_matches[0]);
         }),
         tooltip: 'Notification Maker',
         child: Icon(Icons.add),
