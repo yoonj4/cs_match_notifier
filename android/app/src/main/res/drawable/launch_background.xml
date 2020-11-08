@@ -7,8 +7,7 @@
      <item>
         <bitmap
             android:gravity="center"
-            android:src="@drawable/match_base_1"
-            android:scaleType="fitXY"
+            android:src="@drawable/matchbase"
             />
     </item>
 </layer-list>
