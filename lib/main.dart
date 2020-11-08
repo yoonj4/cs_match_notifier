@@ -141,12 +141,10 @@ class _MyHomePageState extends State<MyHomePage> {
                     day = ' ' + DateFormat('MMMM d, yyyy').format(matchTime);
                   }
 
-                  final String notificationIconFilePath = 'assets/notification_icon.svg';
                   return Card(
                       child: ListTile(
                         title: Text(match.opponent1 + " vs " + match.opponent2, style: TextStyle(fontWeight: FontWeight.bold),),
                         subtitle: Text(DateFormat('jm').format(matchTime) + day),
-                        trailing: ,
                       )
                   );
                 },
