@@ -119,7 +119,7 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
-  Future<void> _showNotification() async {
+  Future<void> _showNotification(Match match) async {
     const AndroidNotificationDetails androidPlatformChannelSpecifics =
     AndroidNotificationDetails(
         'your channel id', 'your channel name', 'your channel description',
@@ -128,10 +128,10 @@ class _MyHomePageState extends State<MyHomePage> {
     const NotificationDetails platformChannelSpecifics =
     NotificationDetails(android: androidPlatformChannelSpecifics);
 
-    var _matchNotif = _matches[1].opponent1 + " vs " + _matches[1].opponent2 + " is starting now! Watch now!";
+    var _matchNotif = match.opponent1 + " vs " + match.opponent2 + " is starting now! Watch now!";
     await flutterLocalNotificationsPlugin.show(
         0, 'Match Base', _matchNotif, platformChannelSpecifics,
-        payload: _matches[1].stream['twitch']);
+        payload: match.stream['twitch']);
   }
 
   @override
@@ -201,8 +201,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                 } else {
                                   _favoritedMatches.add(match);
                                   _notificationTimers[match] = Timer(matchTime.difference(DateTime.now()), () {
-                                    // TODO: Put Byron's code here
-                                    print('Notification went off.');
+                                    _showNotification(match);
                                   });
                                 }
                               });
@@ -222,7 +221,7 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => setState(() {
-          _showNotification();
+          _showNotification(_matches[1]);
         }),
         tooltip: 'Notification Maker',
         child: Icon(Icons.add),
