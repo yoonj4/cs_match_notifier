@@ -7,6 +7,8 @@
      <item>
         <bitmap
             android:gravity="center"
-            android:src="@drawable/csgo_logo" />
+            android:src="@drawable/match_base_1"
+            android:scaleType="fitXY"
+            />
     </item>
 </layer-list>
