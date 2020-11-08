@@ -81,7 +81,10 @@ class _MyHomePageState extends State<MyHomePage> {
         int numOfMatches = matches.length;
         print(numOfMatches);
         setState(() {
-          _matches = new List(numOfMatches);
+          _matches = List.from(matches.map((e) {
+            Match match = Match.fromJson(e);
+            return match;
+          }));
         });
       } else {
         _matches = new List(0);
@@ -126,8 +129,11 @@ class _MyHomePageState extends State<MyHomePage> {
             Expanded(
               child: ListView.builder(
                 itemBuilder: (context, index) {
-                  print('index' + index.toString());
-                  return ListTile();
+                  Match match = _matches[index];
+                  return ListTile(
+                    title: Text(match.opponent1 + " vs " + match.opponent2),
+                    subtitle: Text(match.date),
+                  );
                 },
                 itemCount: _matches.length,
                 scrollDirection: Axis.vertical,
