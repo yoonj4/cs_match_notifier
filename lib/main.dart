@@ -4,6 +4,7 @@ import 'package:cs_match_notifier/match.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
+import 'package:intl/intl.dart';
 
 void main() {
   runApp(MyApp());
@@ -101,11 +102,6 @@ class _MyHomePageState extends State<MyHomePage> {
     // fast, so that you can just rebuild anything that needs updating rather
     // than having to individually change instances of widgets.
     return Scaffold(
-      appBar: AppBar(
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
-      ),
       body: Center(
         // Center is a layout widget. It takes a single child and positions it
         // in the middle of the parent.
@@ -126,13 +122,32 @@ class _MyHomePageState extends State<MyHomePage> {
           // horizontal).
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
+
             Expanded(
               child: ListView.builder(
                 itemBuilder: (context, index) {
                   Match match = _matches[index];
-                  return ListTile(
-                    title: Text(match.opponent1 + " vs " + match.opponent2),
-                    subtitle: Text(match.date),
+                  DateTime matchTime = match.date;
+
+                  String day;
+                  String matchDay = DateFormat('yyyyMMdd').format(matchTime);
+                  DateTime now = DateTime.now();
+                  String today = DateFormat('yyyyMMdd').format(now);
+
+                  if (matchDay == today) {
+                    day = ' today';
+                  } else if (matchDay.substring(0, matchDay.length - 1) == today.substring(0, today.length - 1)
+                             && matchDay.substring(matchDay.length - 1) == today.substring(today.length - 1)) {
+                    day = ' tomorrow';
+                  } else {
+                    day = ' ' + DateFormat('MMMM d, yyyy').format(matchTime);
+                  }
+                  return Card(
+                      child: ListTile(
+                        title: Text(match.opponent1 + " vs " + match.opponent2, style: TextStyle(fontWeight: FontWeight.bold),),
+                        subtitle: Text(DateFormat('jm').format(matchTime) + day),
+                        trailing: ,
+                      )
                   );
                 },
                 itemCount: _matches.length,
