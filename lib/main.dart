@@ -143,6 +143,12 @@ class _MyHomePageState extends State<MyHomePage> {
           ],
         ),
       ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => setState(() {
+        }),
+        tooltip: 'Notification Maker',
+        child: Icon(Icons.add),
+      ),
     );
   }
 }
