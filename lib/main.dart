@@ -58,7 +58,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   List<Match> _matches = new List(0);
-  List<Match> _favoritedMatches;
+  List<Match> _favoritedMatches = new List();
 
   @override
   void initState() {
@@ -141,12 +141,27 @@ class _MyHomePageState extends State<MyHomePage> {
                     day = ' ' + DateFormat('MMMM d, yyyy').format(matchTime);
                   }
 
+                  bool isFavoritedMatch = _favoritedMatches.contains(match);
+                  Color textColor = isFavoritedMatch ? Colors.white : Colors.black;
+
                   return Card(
                       child: ListTile(
-                        title: Text(match.opponent1 + " vs " + match.opponent2, style: TextStyle(fontWeight: FontWeight.bold),),
-                        subtitle: Text(DateFormat('jm').format(matchTime) + day),
-                        trailing: Image(image: AssetImage('assets/clock.png'),),
-                      )
+                        title: Text(match.opponent1 + " vs " + match.opponent2, style: TextStyle(fontWeight: FontWeight.bold, color: textColor),),
+                        subtitle: Text(DateFormat('jm').format(matchTime) + day, style: TextStyle(color: textColor),),
+                        trailing: GestureDetector(
+                            child: Image(image: isFavoritedMatch ? AssetImage('assets/clock-white.png') : AssetImage('assets/clock.png'),),
+                            onTap: () {
+                              setState(() {
+                                if (isFavoritedMatch) {
+                                  _favoritedMatches.remove(match);
+                                } else {
+                                  _favoritedMatches.add(match);
+                                }
+                              });
+                            },
+                        ),
+                      ),
+                      color: isFavoritedMatch ? Colors.orange : Colors.white,
                   );
                 },
                 itemCount: _matches.length,

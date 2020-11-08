@@ -16,4 +16,16 @@ class Match {
     var dateFromJson = json['date'] + 'z';
     date = DateTime.parse(dateFromJson).toLocal();
   }
+
+  bool operator ==(Object other) {
+    if (other is Match) {
+      return matchId == other.matchId;
+    }
+
+    return false;
+  }
+
+  @override
+  int get hashCode => matchId;
+
 }
